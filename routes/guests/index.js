@@ -36,4 +36,24 @@ router.get('/getAllGuests', async (req, res, next) => {
     }
 });
 
+router.put('/update-accepted/:id', async (req, res) => {
+    try {
+        const guestId = req.params.id;
+        const updatedGuest = await Guest.findByIdAndUpdate(
+            guestId,
+            { $set: { accepted: true } },
+            { new: true }
+        );
+
+        if (!updatedGuest) {
+            return res.status(404).json({ message: 'Guest not found' });
+        }
+
+        return res.json(updatedGuest);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router

@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
 const guestSchema = new mongoose.Schema({
-    guests: [String]
+    guests: [String],
+    accepted: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const Guest = mongoose.model('Guest', guestSchema);
