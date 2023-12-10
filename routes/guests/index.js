@@ -11,7 +11,7 @@ router.post('/addGuests', async (req, res, next) => {
         await newGuest.save();
         res.status(201).json({ message: "Guests added successfully", data: newGuest });
     } catch (error) {
-        next(error); // Pasa el error al middleware de manejo de errores
+        next(error);
     }
 });
 
@@ -23,7 +23,16 @@ router.get('/getGuests/:id', async (req, res, next) => {
         }
         res.status(200).json(guest);
     } catch (error) {
-        next(error); // Pasa el error al middleware de manejo de errores
+        next(error);
+    }
+});
+
+router.get('/getAllGuests', async (req, res, next) => {
+    try {
+        const guests = await Guest.find({});
+        res.status(200).json(guests);
+    } catch (error) {
+        next(error);
     }
 });
 
