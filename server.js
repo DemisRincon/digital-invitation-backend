@@ -22,6 +22,9 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/guests', guestRoutes); // Add guests routes to middleware chain
+app.get('/', (req, res) => {
+    res.json({ message: "Hello" });
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
