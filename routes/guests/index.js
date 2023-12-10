@@ -56,4 +56,19 @@ router.put('/update-accepted/:id', async (req, res) => {
     }
 });
 
+router.post('/create-several-guests', async (req, res) => {
+    try {
+        const guestArray = req.body; // Recibe el array de invitados desde la solicitud
+
+        // Inserta el array de invitados en la base de datos
+        const createdGuests = await Guest.create(guestArray);
+
+        return res.status(201).json(createdGuests);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error al crear invitados' });
+    }
+});
+
+
 module.exports = router
