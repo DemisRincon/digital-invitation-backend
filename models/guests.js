@@ -5,6 +5,9 @@ const guestSchema = new mongoose.Schema({
     accepted: {
         type: Boolean,
         default: false
+    },
+    tableNumber: {
+        type: Number,
     }
 });
 

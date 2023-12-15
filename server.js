@@ -14,7 +14,6 @@ mongoose
 // Enable Cross-Origin Resource Sharing and enhance security with Helmet
 app.use(cors());
 app.use(helmet());
-
 // Add middleware to parse incoming JSON data if not already done
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Guest = require('../../models/guests');
+const Guest = require('../models/guests');
 
 router.post('/addGuests', async (req, res, next) => {
     const newGuest = new Guest({
-        guests: req.body.guests
+        guests: req.body.guests,
+        tableNumber: req.body.table
     });
 
     try {
@@ -26,6 +27,7 @@ router.get('/getGuests/:id', async (req, res, next) => {
         next(error);
     }
 });
+
 
 router.get('/getAllGuests', async (req, res, next) => {
     try {
