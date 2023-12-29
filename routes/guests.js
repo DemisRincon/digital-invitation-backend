@@ -28,6 +28,17 @@ router.get('/getGuests/:id', async (req, res, next) => {
     }
 });
 
+router.delete('/deleteGuest/:id', async (req, res, next) => {
+    try {
+        const guest = await Guest.findByIdAndDelete(req.params.id);
+        if (!guest) {
+            return res.status(404).json({ message: "Guest not found" });
+        }
+        res.status(200).json({ message: "Guest successfully deleted" });
+    } catch (error) {
+        next(error);
+    }
+});
 
 router.get('/getAllGuests', async (req, res, next) => {
     try {
@@ -89,6 +100,15 @@ router.post('/create-several-guests', async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error al crear invitados' });
+    }
+});
+
+router.delete('/deleteAllGuests', async (req, res, next) => {
+    try {
+        await Guest.deleteMany({});
+        res.status(200).json({ message: "All guests successfully deleted" });
+    } catch (error) {
+        next(error);
     }
 });
 
