@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 
 const guestSchema = new mongoose.Schema({
     guests: [String],
-    accepted: {
-        type: Boolean,
-        default: false
+    state: {
+        type: String,
+        enum: ['created', 'accepted', 'declined'],
+        default: 'created'
     },
     tableNumber: {
         type: Number,

@@ -43,7 +43,27 @@ router.put('/update-accepted/:id', async (req, res) => {
         const guestId = req.params.id;
         const updatedGuest = await Guest.findByIdAndUpdate(
             guestId,
-            { $set: { accepted: true } },
+            { $set: { state: 'accepted' } },
+            { new: true }
+        );
+
+        if (!updatedGuest) {
+            return res.status(404).json({ message: 'Guest not found' });
+        }
+
+        return res.json(updatedGuest);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+});
+
+router.put('/update-declined/:id', async (req, res) => {
+    try {
+        const guestId = req.params.id;
+        const updatedGuest = await Guest.findByIdAndUpdate(
+            guestId,
+            { $set: { state: 'declined' } },
             { new: true }
         );
 
