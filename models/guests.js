@@ -7,9 +7,15 @@ const guestSchema = new mongoose.Schema({
         enum: ['created', 'accepted', 'declined'],
         default: 'created'
     },
-    tableNumber: {
-        type: Number,
-    }
+    tableNumber: Number
+}, {
+    toJSON: { virtuals: true }, // Ensure virtual fields are included when converting to JSON
+    toObject: { virtuals: true }
+});
+
+// Virtual field for profileLink
+guestSchema.virtual('profileLink').get(function () {
+    return `https://bodakassydemis.netlify.app/${this._id}`;
 });
 
 const Guest = mongoose.model('Guest', guestSchema);
