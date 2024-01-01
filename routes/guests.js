@@ -42,7 +42,7 @@ router.delete('/deleteGuest/:id', async (req, res, next) => {
 
 router.get('/getAllGuests', async (req, res, next) => {
     try {
-        const guests = await Guest.find({});
+        const guests = await Guest.find({}).sort({ tableNumber: 1 });
         res.status(200).json(guests);
     } catch (error) {
         next(error);
