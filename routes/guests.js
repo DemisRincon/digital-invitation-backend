@@ -112,5 +112,67 @@ router.delete('/deleteAllGuests', async (req, res, next) => {
     }
 });
 
+router.get('/namesCount', async (req, res, next) => {
+    try {
+        const result = await Guest.aggregate([
+            {
+                $match: { state: { $in: ['created', 'accepted'] } } // Only include documents with 'created' or 'accepted' state
+            },
+            { $unwind: "$guests" },
+            { $group: { _id: null, totalNames: { $sum: 1 } } }
+        ]);
+
+        const totalNames = result.length > 0 ? result[0].totalNames : 0;
+        res.status(200).json({ totalGuestNames: totalNames });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get('/countByState', async (req, res, next) => {
+    try {
+        const result = await Guest.aggregate([
+            {
+                $match: { state: { $in: ['created', 'accepted'] } }
+            },
+            {
+                $group: {
+                    _id: "$state", // Group by state
+                    count: { $sum: 1 } // Count documents in each group
+                }
+            }
+        ]);
+
+        // Transforming the result into the desired format
+        const counts = result.reduce((acc, curr) => {
+            acc[curr._id] = curr.count;
+            return acc;
+        }, { accepted: 0, created: 0 }); // Initialize with zeros
+
+        res.status(200).json(counts);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get('/groupedByTable', async (req, res, next) => {
+    try {
+        const result = await Guest.aggregate([
+            {
+                $group: {
+                    _id: "$tableNumber", // Group by tableNumber
+                    guests: { $push: "$$ROOT" } // Push the entire document into the guests array
+                }
+            },
+            {
+                $sort: { _id: 1 } // Optional: Sort by tableNumber
+            }
+        ]);
+
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+});
 
 module.exports = router
