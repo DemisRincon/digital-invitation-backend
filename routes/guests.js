@@ -131,25 +131,24 @@ router.get('/namesCount', async (req, res, next) => {
 
 router.get('/countByState', async (req, res, next) => {
     try {
-        const result = await Guest.aggregate([
-            {
-                $match: { state: { $in: ['created', 'accepted'] } }
-            },
-            {
-                $group: {
-                    _id: "$state", // Group by state
-                    count: { $sum: 1 } // Count documents in each group
-                }
-            }
+        // Count for 'created' state
+        const createdCountResult = await Guest.aggregate([
+            { $match: { state: 'created' } },
+            { $unwind: '$guests' },
+            { $group: { _id: null, count: { $sum: 1 } } }
         ]);
 
-        // Transforming the result into the desired format
-        const counts = result.reduce((acc, curr) => {
-            acc[curr._id] = curr.count;
-            return acc;
-        }, { accepted: 0, created: 0 }); // Initialize with zeros
+        // Count for 'accepted' state
+        const acceptedCountResult = await Guest.aggregate([
+            { $match: { state: 'accepted' } },
+            { $unwind: '$guests' },
+            { $group: { _id: null, count: { $sum: 1 } } }
+        ]);
 
-        res.status(200).json(counts);
+        const createdCount = createdCountResult.length > 0 ? createdCountResult[0].count : 0;
+        const acceptedCount = acceptedCountResult.length > 0 ? acceptedCountResult[0].count : 0;
+
+        res.status(200).json({ created: createdCount, accepted: acceptedCount });
     } catch (error) {
         next(error);
     }
